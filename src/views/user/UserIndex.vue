@@ -100,11 +100,10 @@ export default {
 
     },
     methods: {
+        // 修复：使用 router.push 导航，不再使用 $router.go(0) 强制刷新页面
         handle() {
-            //获取当前路由
-            if (this.$route.path != '/UserIndex/UserPersonalCenter')
+            if (this.$route.path !== '/UserIndex/UserPersonalCenter')
                 this.$router.push({ path: '/UserIndex/UserPersonalCenter' });
-            this.$router.go(0)
         },
         handleSelect() {
         },

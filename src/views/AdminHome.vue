@@ -42,7 +42,7 @@ export default {
     components: { Notice, DataView, HomeFeedBack, HomeLost, HomeFound },
     data() {
         return {
-
+            imgUrl: '', // 修复：声明 imgUrl 避免 Vue 警告（之前未在 data 中定义直接使用 this.imgUrl）
         }
     },
     mounted() {

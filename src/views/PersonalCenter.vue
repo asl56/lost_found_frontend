@@ -426,7 +426,7 @@ export default {
                 role: [
                     { required: true, message: '请输入身份', trigger: 'blur' }
                 ],
-                phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }, { pattern: /^1[34578]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur' }],
+                phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }, { pattern: /^1[345789]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur' }],
                 email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, { pattern: /^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/, message: '邮箱格式不正确', trigger: 'blur' }],
                 password: [
                     { required: true, message: '请输入原始密码', trigger: 'blur' }

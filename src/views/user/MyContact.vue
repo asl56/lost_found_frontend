@@ -255,7 +255,7 @@ export default {
                 ItemPhoto: [
                     { required: true, message: '请上传物品图片', trigger: 'blur' }
                 ],
-                phone: [{ required: true, message: '请输入联系方式', trigger: 'blur' }, { pattern: /^1[34578]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur' }],
+                phone: [{ required: true, message: '请输入联系方式', trigger: 'blur' }, { pattern: /^1[345789]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur' }],
                 description: [{ required: true, message: '请输入物品描述', trigger: 'blur' }, { min: 1, max: 60, message: '长度在 1 到 60 个字符', trigger: 'blur' }],
                 statusID: [
                     { required: true, message: '请选择状态', trigger: 'blur' }

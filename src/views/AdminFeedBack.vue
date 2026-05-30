@@ -55,7 +55,7 @@
       </div>
       <div>
         <div style="text-align: right;width: 90%;margin: 0 auto;margin-bottom: 20px;">
-          <!-- <el-button type="primary" icon="el-icon-plus" circle @click="dialogVisible = true"></el-button> -->
+          <!-- 管理员仅查看反馈，无需添加按钮 -->
         </div>
         <el-table
           :data="tableData"

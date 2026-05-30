@@ -35,7 +35,8 @@ const routes = [
   {
     path: '/PersonalCenter',
     name: 'PersonalCenter',
-    component: PersonalCenter
+    component: PersonalCenter,
+    meta: { requiresAuth: true } // 修复：添加路由元信息标记需要登录，未登录访问将被路由守卫拦截
   },
   {
     path: '/UserIndex',
@@ -98,6 +99,7 @@ const router = new VueRouter({
 const adminRoutePrefix = '/AdminIndex'
 
 router.beforeEach((to, from, next) => {
+  // 登录页面无需认证
   if (to.path === '/') {
     next()
     return
@@ -105,11 +107,20 @@ router.beforeEach((to, from, next) => {
 
   const token = localStorage.getItem('jwt')
   const role = localStorage.getItem('role')
+
+  // 未登录拦截：需要认证的页面（包括 PersonalCenter）必须登录后访问
+  if (to.matched.some(record => record.meta.requiresAuth) && !token) {
+    next('/')
+    return
+  }
+
+  // 全局未登录兜底拦截
   if (!token) {
     next('/')
     return
   }
 
+  // 管理员路由权限校验：仅"管理员"角色可访问 /AdminIndex 开头的路由
   if (to.path.startsWith(adminRoutePrefix) && role !== '管理员') {
     next('/403')
     return

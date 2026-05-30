@@ -4,24 +4,24 @@ module.exports = defineConfig({
   devServer: {
     open: true,
     host: 'localhost',
-    port: 8080,
+    port: 8081, // 前端开发服务器端口，避免与后端8080冲突
     https: false,
-    //以上的ip和端口是我们本机的;下面为需要跨域的
-    proxy: { //配置跨域
+    // 代理配置：将前端请求转发到后端Spring Boot服务器
+    proxy: {
       '/login': {
-        target: 'http://localhost:8080', //后台接口
+        target: 'http://localhost:8080', // 后端Spring Boot服务地址
         ws: true,
-        changOrigin: true, //允许跨域
+        changeOrigin: true, // 允许跨域（修复拼写错误：changOrigin -> changeOrigin）
         pathRewrite: {
-          '^/login': '' //请求的时候使用这个api就可以
+          '^/login': '' // 请求时将 /login 前缀去掉
         }
       },
       '/main': {
-        target: 'http://localhost:8080', //后台接口
+        target: 'http://localhost:8080', // 后端Spring Boot服务地址
         ws: true,
-        changOrigin: true, //允许跨域
+        changeOrigin: true, // 允许跨域（修复拼写错误：changOrigin -> changeOrigin）
         pathRewrite: {
-          '^/main': '' //请求的时候使用这个api就可以
+          '^/main': '' // 请求时将 /main 前缀去掉
         }
       },
     }

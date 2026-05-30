@@ -21,13 +21,10 @@
         class="el-icon-bell"
         style="position: absolute ;left: 0; top: 4px;"
       />
-      <marquee
-        behavior="scroll"
-        direction="left"
-        style="position: absolute ;left: 17px;"
-      >
+      <!-- 修复：使用CSS动画替代已废弃的<marquee>标签，兼容现代浏览器 -->
+      <span class="notice-scroll" style="position: absolute; left: 17px;">
         <span>{{ notice.title }}</span>
-      </marquee>
+      </span>
     </div>
     <el-divider />
 
@@ -446,15 +443,13 @@ export default {
                 this.dialogShowView = true;
             })
         },
-        // 前往失物中心
+        // 前往失物中心（修复：使用 router.push 导航，不再使用 $router.go(0) 强制刷新）
         handleLost() {
             this.$router.push('/UserIndex/UserLostHome');
-            this.$router.go(0)
         },
-        // 前往招领中心
+        // 前往招领中心（修复：使用 router.push 导航，不再使用 $router.go(0) 强制刷新）
         handleFound() {
             this.$router.push('/UserIndex/UserFoundHome');
-            this.$router.go(0)
         },
         // 初始化数据
         getData() {
@@ -570,5 +565,20 @@ export default {
 
 .box-card {
     width: 650px;
+}
+
+/* CSS动画替代<marquee>标签：公告文字从右向左滚动 */
+.notice-scroll {
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+}
+.notice-scroll span {
+    display: inline-block;
+    animation: marquee-scroll 12s linear infinite;
+}
+@keyframes marquee-scroll {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
 }
 </style>

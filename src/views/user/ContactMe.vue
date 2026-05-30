@@ -255,7 +255,7 @@ export default {
                 ItemPhoto: [
                     { required: true, message: '请上传物品图片', trigger: 'blur' }
                 ],
-                phone: [{ required: true, message: '请输入联系方式', trigger: 'blur' }, { pattern: /^1[34578]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur' }],
+                phone: [{ required: true, message: '请输入联系方式', trigger: 'blur' }, { pattern: /^1[345789]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur' }],
                 description: [{ required: true, message: '请输入物品描述', trigger: 'blur' }, { min: 1, max: 60, message: '长度在 1 到 60 个字符', trigger: 'blur' }],
                 statusID: [
                     { required: true, message: '请选择状态', trigger: 'blur' }
@@ -369,16 +369,21 @@ export default {
                     this.getData()
                     return;
                 }
-                for (let index = 0; index < data.length; index++) {
-                    data[index].itemPhoto = `/main/download?name=${data[index].itemPhoto}`;
-                    axios.get("/main/getUser", { params: { id: data[index].userID } }).then(res => {
+                // 修复：使用 Promise.all 等待所有异步用户信息请求完成，替代之前不可靠的 setTimeout(500)
+                const userPromises = data.map((item, index) => {
+                    item.itemPhoto = `/main/download?name=${item.itemPhoto}`;
+                    return axios.get("/main/getUser", { params: { id: item.userID } }).then(res => {
                         data[index].name = res.data.data.rows[0].name;
-                        data[index].phone = res.data.data.rows[0].phone
-                    })
-                }
-                setTimeout(() => {
-                    this.tableData = data
-                }, 500);
+                        data[index].phone = res.data.data.rows[0].phone;
+                    }).catch(() => {
+                        // 单个用户查询失败不影响整体
+                        data[index].name = '未知';
+                        data[index].phone = '未知';
+                    });
+                });
+                Promise.all(userPromises).then(() => {
+                    this.tableData = data;
+                });
 
             });
 
@@ -393,16 +398,20 @@ export default {
                     this.getFoundData()
                     return;
                 }
-                for (let index = 0; index < data.length; index++) {
-                    data[index].itemPhoto = `/main/download?name=${data[index].itemPhoto}`;
-                    axios.get("/main/getUser", { params: { id: data[index].userID } }).then(res => {
+                // 修复：使用 Promise.all 等待所有异步用户信息请求完成，替代之前不可靠的 setTimeout(500)
+                const userPromises = data.map((item, index) => {
+                    item.itemPhoto = `/main/download?name=${item.itemPhoto}`;
+                    return axios.get("/main/getUser", { params: { id: item.userID } }).then(res => {
                         data[index].name = res.data.data.rows[0].name;
-                        data[index].phone = res.data.data.rows[0].phone
-                    })
-                }
-                setTimeout(() => {
-                    this.tableData = data
-                }, 500);
+                        data[index].phone = res.data.data.rows[0].phone;
+                    }).catch(() => {
+                        data[index].name = '未知';
+                        data[index].phone = '未知';
+                    });
+                });
+                Promise.all(userPromises).then(() => {
+                    this.tableData = data;
+                });
             });
         }
     },
