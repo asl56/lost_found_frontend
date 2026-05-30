@@ -1,13 +1,7 @@
 <!-- 失物视图 -->
 <template>
-  <div
-    class="HomeLost"
-    style="margin: 0;"
-  >
-    <div
-      id="HomeLost"
-      style="width: 100%;height: 300px;"
-    />
+  <div class="HomeLost">
+    <div id="HomeLost" style="width:100%;height:280px;" />
   </div>
 </template>
 

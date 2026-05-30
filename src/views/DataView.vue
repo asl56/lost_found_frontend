@@ -1,187 +1,93 @@
-<!-- 数据总览 -->
 <template>
-  <div class="DataView">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <div>
-          <el-statistic>
-            <template slot="formatter">
-              <span style="font-size: 16px;font-weight: bold;">用户留言</span>
-              <dv-digital-flop
-                :config="config"
-                style="width:100px;height:50px;color: black;"
-              />
-            </template>
-          </el-statistic>
+  <div class="data-view">
+    <div class="stat-row">
+      <div class="stat-item">
+        <div class="stat-icon-wrap" style="background:rgba(64,158,255,0.1);color:#409EFF;"><i class="el-icon-chat-line-round" /></div>
+        <div class="stat-info">
+          <span class="stat-label">用户留言</span>
+          <dv-digital-flop :config="config" style="width:80px;height:36px;" />
         </div>
-      </el-col>
-      <el-col :span="6">
-        <div>
-          <el-statistic>
-            <template slot="formatter">
-              <span style="font-size: 16px;font-weight: bold;">今日新增留言</span>
-              <i
-                v-show="like"
-                class="el-icon-star-on"
-                style="color:red"
-              />
-              <dv-digital-flop
-                :config="toDayConfig"
-                style="width:100px;height:50px;color: black;"
-              />
-            </template>
-          </el-statistic>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon-wrap" style="background:rgba(245,108,108,0.1);color:#F56C6C;"><i class="el-icon-star-on" v-show="like" /></div>
+        <div class="stat-info">
+          <span class="stat-label">今日新增</span>
+          <dv-digital-flop :config="toDayConfig" style="width:80px;height:36px;" />
         </div>
-      </el-col>
-      <el-col :span="6">
-        <div>
-          <el-statistic>
-            <template slot="formatter">
-              <span style="font-size: 16px;font-weight: bold;">剩余丢失物品</span>
-              <dv-digital-flop
-                :config="LostConfig"
-                style="width:100px;height:50px;color: black;"
-              />
-            </template>
-          </el-statistic>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon-wrap" style="background:rgba(230,162,60,0.1);color:#E6A23C;"><i class="el-icon-warning" /></div>
+        <div class="stat-info">
+          <span class="stat-label">遗失物品</span>
+          <dv-digital-flop :config="LostConfig" style="width:80px;height:36px;" />
         </div>
-      </el-col>
-      <el-col :span="6">
-        <div>
-          <el-statistic>
-            <template slot="formatter">
-              <span style="font-size: 16px;font-weight: bold;">剩余招领物品</span>
-              <dv-digital-flop
-                :config="FoundConfig"
-                style="width:100px;height:50px;color: black;"
-              />
-            </template>
-          </el-statistic>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon-wrap" style="background:rgba(103,194,58,0.1);color:#67C23A;"><i class="el-icon-circle-check" /></div>
+        <div class="stat-info">
+          <span class="stat-label">招领物品</span>
+          <dv-digital-flop :config="FoundConfig" style="width:80px;height:36px;" />
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import request from "@/utils/request";
 export default {
-    data() {
-        return {
-            today: '',
-            like: true,
-            title: "增长人数",
-
-            toDayConfig: {
-                number: [0],
-                content: '{nt}条',
-                style: {
-                    fontSize: 20,//字体大小
-                    fill: 'red',//字体颜色
-                    //将字体样式设置为黑体
-                    fontFamily: '微软雅黑',
-                }
-            },
-            config: {
-                number: [0],
-                content: '{nt}条',
-                style: {
-                    fontSize: 20,//字体大小
-                    fill: 'black',//字体颜色
-                    //将字体样式设置为黑体
-                    fontFamily: '微软雅黑',
-                }
-            },
-            LostConfig: {
-                number: [0],
-                content: '{nt}件',
-                style: {
-                    fontSize: 20,//字体大小
-                    fill: 'black',//字体颜色
-                    //将字体样式设置为黑体
-                    fontFamily: '微软雅黑',
-                }
-            },
-            FoundConfig: {
-                number: [0],
-                content: '{nt}件',
-                style: {
-                    fontSize: 20,//字体大小
-                    fill: 'black',//字体颜色
-                    //将字体样式设置为黑体
-                    fontFamily: '微软雅黑',
-                }
-            }
-        }
+  data() { return {
+    today: '', like: false,
+    config: { number:[0], content:'{nt}条', style:{ fontSize:20, fill:'#303133', fontFamily:'Microsoft YaHei' } },
+    toDayConfig: { number:[0], content:'{nt}条', style:{ fontSize:20, fill:'#F56C6C', fontFamily:'Microsoft YaHei' } },
+    LostConfig: { number:[0], content:'{nt}件', style:{ fontSize:20, fill:'#303133', fontFamily:'Microsoft YaHei' } },
+    FoundConfig: { number:[0], content:'{nt}件', style:{ fontSize:20, fill:'#303133', fontFamily:'Microsoft YaHei' } },
+  }},
+  mounted() { this.getData() },
+  methods: {
+    getData() {
+      this.today = this.getCurrentDate()
+      request.get("/main/getFeedBackAll").then(r => { this.config = { ...this.config, number:[r.data.data.total] } })
+      request.get("/main/getFeedBack", { params:{ released:this.today } }).then(r => {
+        this.toDayConfig = { ...this.toDayConfig, number:[r.data.data.total] }; this.like = r.data.data.total > 0
+      })
+      request.get("/main/getLost", { params:{ statusID:2 } }).then(r => { this.LostConfig = { ...this.LostConfig, number:[r.data.data.total] } })
+      request.get("/main/getFound", { params:{ statusID:4 } }).then(r => { this.FoundConfig = { ...this.FoundConfig, number:[r.data.data.total] } })
     },
-    mounted() {
-
-        this.getData();
-
-    },
-    methods: {
-        // 初始化数据
-        getData() {
-            this.today = this.getCurrentDate();
-            request.get("/main/getFeedBackAll").then(res => {
-                this.config = {
-                    ...this.config,
-                    number: [res.data.data.total],
-                }
-            });
-            request.get("/main/getFeedBack", { params: { released: this.today } }).then(res => {
-                this.toDayConfig = {
-                    ...this.toDayConfig,
-                    number: [res.data.data.total],
-                }
-                if(res.data.data.total!=0){
-                    this.like=true
-                }else{
-                    this.like=false
-                }
-            });
-            request.get("/main/getLost", { params: { statusID: 2 } }).then(res => {
-                this.LostConfig = {
-                    ...this.LostConfig,
-                    number: [res.data.data.total],
-                }
-            });
-            request.get("/main/getFound", { params: { statusID: 4 } }).then(res => {
-                this.FoundConfig = {
-                    ...this.FoundConfig,
-                    number: [res.data.data.total],
-                }
-            });
-        },
-        // 获取当前日期
-        getCurrentDate() {
-            let now = new Date();
-            let year = now.getFullYear();
-            let month = now.getMonth() + 1;
-            if (month < 10) {
-                month = '0' + month
-            }
-            let day = now.getDate();
-            if (day < 10) {
-                day = '0' + day
-            }
-            return year + "-" + month + "-" + day;
-        }
-    },
-
+    getCurrentDate() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` },
+  },
 }
 </script>
-<style>
-.like {
-    cursor: pointer;
-    font-size: 25px;
-    display: inline-block;
 
+<style scoped>
+.data-view { margin-bottom: 16px; }
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
-
-.DataView {
-    padding-top: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-    margin-bottom: 20px;
+.stat-item {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
 }
+.stat-item:hover { transform: translateY(-2px); }
+.stat-icon-wrap {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.stat-info { display: flex; flex-direction: column; }
+.stat-label { font-size: 13px; color: #909399; }
+@media (max-width: 992px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .stat-row { grid-template-columns: 1fr; } }
 </style>

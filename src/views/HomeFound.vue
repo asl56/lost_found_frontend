@@ -1,13 +1,7 @@
 <!-- 招领视图 -->
 <template>
-  <div
-    class="HomeFound"
-    style="margin: 0;"
-  >
-    <div
-      id="HomeFound"
-      style="width: 100%;height: 300px;"
-    />
+  <div class="HomeFound">
+    <div id="HomeFound" style="width:100%;height:280px;" />
   </div>
 </template>
 

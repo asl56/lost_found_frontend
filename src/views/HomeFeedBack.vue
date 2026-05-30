@@ -1,13 +1,7 @@
 <!-- 留言视图 -->
 <template>
-  <div
-    class="HomeFeedBack"
-    style="margin: 0;"
-  >
-    <div
-      id="HomeFeedBack"
-      style="width: 100%;height: 300px;"
-    />
+  <div class="HomeFeedBack">
+    <div id="HomeFeedBack" style="width:100%;height:280px;" />
   </div>
 </template>
 

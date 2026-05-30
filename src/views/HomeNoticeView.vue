@@ -44,9 +44,7 @@ export default {
     },
 }
 </script>
-<style>
-.HomeNoticeView{
-    margin-top: 10px;
-}
-
+<style scoped>
+.HomeNoticeView { padding: 10px 0 0; }
+.HomeNoticeView .el-timeline { padding: 0; }
 </style>

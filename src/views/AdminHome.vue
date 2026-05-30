@@ -1,59 +1,65 @@
 <template>
-  <div class="Adminhome">
+  <div class="admin-dashboard">
+    <!-- 顶部统计卡片 -->
     <DataView />
-    <div style="display: flex;justify-content:space-between">
-      <div class="home_datav">
-        <dv-border-box-7
-          :color="['#fff', '#ddd']"
-          style="overflow: hidden;"
-        >
-          <Notice />
-        </dv-border-box-7>
+
+    <!-- 图表区域：2x2 网格 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <Notice />
       </div>
-      <div class="home_datav">
-        <dv-border-box-7 :color="['#fff', '#ddd']">
-          <HomeFeedBack />
-        </dv-border-box-7>
+      <div class="chart-card">
+        <HomeFeedBack />
       </div>
-    </div>
-    <div style="display: flex;justify-content:space-between;margin-top: 20px">
-      <div class="home_datav">
-        <dv-border-box-7 :color="['#fff', '#ddd']">
-          <HomeLost />
-        </dv-border-box-7>
+      <div class="chart-card">
+        <HomeLost />
       </div>
-      <div class="home_datav">
-        <dv-border-box-7 :color="['#fff', '#ddd']">
-          <HomeFound />
-        </dv-border-box-7>
+      <div class="chart-card">
+        <HomeFound />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
 import Notice from './HomeNoticeView.vue'
 import DataView from './DataView.vue'
 import HomeFeedBack from './HomeFeedBack.vue'
 import HomeLost from './HomeLost.vue'
 import HomeFound from './HomeFound.vue'
 export default {
-    components: { Notice, DataView, HomeFeedBack, HomeLost, HomeFound },
-    data() {
-        return {
-            imgUrl: '', // 修复：声明 imgUrl 避免 Vue 警告（之前未在 data 中定义直接使用 this.imgUrl）
-        }
-    },
-    mounted() {
-        if (localStorage.getItem('avatar') != null && localStorage.getItem('avatar') != '')
-            this.imgUrl = `/main/download?name=${localStorage.getItem('avatar')}`;
-    },
+  components: { Notice, DataView, HomeFeedBack, HomeLost, HomeFound },
+  data() { return { imgUrl: '' } },
+  mounted() {
+    const av = localStorage.getItem('avatar')
+    if (av) this.imgUrl = `/main/download?name=${av}`
+  },
 }
 </script>
+
 <style scoped>
-.home_datav {
-    width: 550px;
-    height: 250px;
+.admin-dashboard { padding: 0; max-width: 100%; }
+
+/* 2x2 图表网格 */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.chart-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px 20px 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* 响应式 */
+@media (max-width: 1200px) {
+  .chart-grid { gap: 12px; }
+}
+@media (max-width: 768px) {
+  .chart-grid { grid-template-columns: 1fr; }
 }
 </style>
