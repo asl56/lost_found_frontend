@@ -229,4 +229,114 @@
   flex: 1;
   min-width: 0;
 }
+
+/* ================================================
+   全局响应式布局 —— 适配所有屏幕尺寸
+   ================================================ */
+
+/* 全局盒模型统一 */
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 16px; }
+img, video, canvas { max-width: 100%; height: auto; }
+
+/* ===== 平板横屏 (≤1200px) ===== */
+@media (max-width: 1200px) {
+  .page-banner { padding: 32px 36px !important; }
+  .banner-title { font-size: 22px !important; }
+  .banner-subtitle { font-size: 13px !important; }
+  .search-input { width: 220px !important; }
+  .toolbar { flex-wrap: wrap; gap: 10px; }
+}
+
+/* ===== 平板竖屏 (≤992px) ===== */
+@media (max-width: 992px) {
+  .page-banner { padding: 28px 30px !important; border-radius: 12px !important; }
+  .banner-title { font-size: 20px !important; }
+  .search-section { padding: 16px 18px 4px !important; }
+  .search-form .el-form-item { margin-bottom: 14px !important; }
+  .search-input { width: 200px !important; }
+  .pagination-wrap { margin-top: 24px !important; }
+  /* 详情弹窗信息行变垂直 */
+  .info-row { flex-direction: column; gap: 8px; }
+}
+
+/* ===== 手机横屏 (≤768px) ===== */
+@media (max-width: 768px) {
+  #app { font-size: 14px; }
+  .page-banner { padding: 22px 20px !important; border-radius: 10px !important; }
+  .banner-title { font-size: 18px !important; }
+  .banner-subtitle { font-size: 12px !important; display: none; }
+  .page-banner::after, .page-banner::before { display: none; }
+  .search-section { padding: 14px 14px 2px !important; border-radius: 10px !important; }
+  .search-input { width: 100% !important; }
+  .search-form { flex-direction: column !important; }
+  .search-form .el-form-item { width: 100% !important; margin-right: 0 !important; margin-bottom: 12px !important; }
+  .search-form .el-form-item .el-input,
+  .search-form .el-form-item .el-select,
+  .search-form .el-form-item .el-date-editor { width: 100% !important; }
+  .toolbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .pagination-wrap { overflow-x: auto; }
+  /* 弹窗在小屏全宽 */
+  .el-dialog { width: 95% !important; margin-top: 5vh !important; border-radius: 12px !important; }
+  .el-dialog__header { padding: 14px 18px !important; }
+  .el-dialog__title { font-size: 15px !important; }
+  .el-dialog__body { padding: 18px 16px 12px !important; }
+  .el-dialog__footer { padding: 10px 16px 16px !important; }
+  .el-dialog .el-input__inner { padding: 10px 14px; font-size: 14px; }
+  .detail-img { max-height: 200px; }
+  .detail-title { font-size: 17px; }
+  .info-item { padding: 10px 14px; }
+  .card-grid-wrapper { min-height: 200px; }
+}
+
+/* ===== 手机竖屏 (≤480px) ===== */
+@media (max-width: 480px) {
+  .page-banner { padding: 18px 16px !important; border-radius: 8px !important; margin-bottom: 14px !important; }
+  .banner-title { font-size: 16px !important; letter-spacing: 0 !important; }
+  .banner-content h1 { margin-bottom: 0 !important; }
+  .search-section { padding: 12px 10px 0 !important; }
+  .el-dialog { width: 98% !important; margin-top: 2vh !important; border-radius: 10px !important; }
+  .el-dialog__body { padding: 14px 10px 8px !important; }
+  .el-dialog__footer .el-button { min-width: 70px; padding: 8px 18px; font-size: 13px; }
+  .detail-img { max-height: 160px; }
+  .detail-title { font-size: 16px; margin-bottom: 14px; }
+  .detail-info-grid { gap: 10px; }
+  .card-grid { gap: 12px; }
+  /* footer 按钮组允许换行 */
+  .card-footer { flex-wrap: wrap; gap: 4px; }
+  .card-footer .el-button { font-size: 11px; padding: 5px 10px; }
+  .result-count { font-size: 12px; }
+}
+
+/* ===== 自适应容器 ===== */
+.responsive-container {
+  width: 100%;
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+@media (max-width: 768px) {
+  .responsive-container { padding-left: 12px; padding-right: 12px; }
+}
+@media (max-width: 480px) {
+  .responsive-container { padding-left: 8px; padding-right: 8px; }
+}
+
+/* 确保 el-table 在小屏可横向滚动 */
+@media (max-width: 768px) {
+  .el-table { font-size: 13px; }
+  .el-table .cell { padding-left: 8px; padding-right: 8px; }
+}
+
+/* 面包屑响应式隐藏小屏 */
+@media (max-width: 480px) {
+  .el-breadcrumb { font-size: 12px; }
+}
+
+/* el-main padding 适配 */
+@media (max-width: 768px) {
+  .el-main { padding: 12px !important; }
+}
 </style>

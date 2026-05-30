@@ -116,14 +116,33 @@ export default {
 </script>
 <style scoped>
 .index_logo {
-    width: 200px;
-    float: left;
-    position: absolute;
-    top: -12px;
-    left: 12px;
+  width: 180px;
+  float: left;
+  position: absolute;
+  top: -10px;
+  left: 12px;
 }
-.index_avatar{
-    float: right;
-    margin-right: 100px;
+.index_avatar {
+  float: right;
+  margin-right: 40px;
+}
+
+/* ===== 导航栏响应式 ===== */
+@media (max-width: 992px) {
+  .index_logo { width: 140px; top: -6px; left: 8px; }
+  .index_avatar { margin-right: 20px; }
+}
+@media (max-width: 768px) {
+  .el-menu-demo { overflow-x: auto; white-space: nowrap; }
+  .index_logo { width: 120px; top: -4px; left: 4px; position: relative; margin-right: 10px; }
+  .index_avatar { margin-right: 10px; }
+  .el-header { padding: 0 8px !important; height: 56px !important; line-height: 56px !important; }
+  .el-menu--horizontal>.el-menu-item { padding: 0 12px; font-size: 13px; }
+}
+@media (max-width: 480px) {
+  .index_logo { width: 100px; }
+  .index_avatar { margin-right: 4px; }
+  .el-menu--horizontal>.el-menu-item { padding: 0 8px; font-size: 12px; }
+  .el-avatar { width: 36px !important; height: 36px !important; line-height: 36px !important; }
 }
 </style>

@@ -484,8 +484,22 @@ export default {
     clear: both
 }
 
-.box-card {
-    width: 650px;
+.box-card { width: 100%; max-width: 650px; }
+
+/* ===== 首页响应式 ===== */
+@media (max-width: 1200px) {
+  .box-card { max-width: 500px; }
+}
+@media (max-width: 992px) {
+  .box-card { max-width: 100%; }
+}
+@media (max-width: 768px) {
+  .home_datav { width: 100% !important; }
+}
+@media (max-width: 480px) {
+  .userHome_Notice { width: 100% !important; margin-left: 10px !important; }
+  .el-carousel { height: 200px !important; }
+  .el-carousel__container { height: 200px !important; }
 }
 
 /* CSS动画替代<marquee>标签：公告文字从右向左滚动 */
