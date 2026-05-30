@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 import * as echarts from 'echarts';
 export default {
     data() {
@@ -29,7 +29,7 @@ export default {
     methods: {
         // 初始化数据
         getData() {
-            axios.get("/main/getLostData").then(res => {
+            request.get("/main/getLostData").then(res => {
                 // this.dateList = res.data.data;
                 // this.dataList = res.data.data2
                 this.init(res.data.data)

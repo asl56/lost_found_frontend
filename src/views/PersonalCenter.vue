@@ -375,7 +375,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 
 export default {
     data() {
@@ -457,7 +457,7 @@ export default {
                             id: userID,
                             email: this.updateEmail.email
                         }
-                        axios.post("/main/editUser", JSON.stringify(data), {
+                        request.post("/main/editUser", JSON.stringify(data), {
                             headers: {
                                 'Content-Type': 'application/json'
                             }
@@ -533,7 +533,7 @@ export default {
                     message: '验证码发送中，请稍等',
                     type: 'success'
                 });
-                axios.get("/main/email?email=" + this.formData.email).then(res => {
+                request.get("/main/email?email=" + this.formData.email).then(res => {
 
                     this.TrueCaptcha = res.data.data
                 })
@@ -545,7 +545,7 @@ export default {
                     message: '验证码发送中，请稍等',
                     type: 'success'
                 });
-                axios.get("/main/email?email=" + this.formData.email).then(res => {
+                request.get("/main/email?email=" + this.formData.email).then(res => {
 
                     this.TrueCaptcha = res.data.data
                 })
@@ -592,7 +592,7 @@ export default {
                                         id: userID,
                                         password: this.ruleForm.newPassword
                                     }
-                                    axios.post("/main/editUser", JSON.stringify(data), {
+                                    request.post("/main/editUser", JSON.stringify(data), {
                                         headers: {
                                             'Content-Type': 'application/json'
                                         }
@@ -653,7 +653,7 @@ export default {
             this.$refs[updateForm].validate((valid) => {
                 if (valid) {
                     this.updateForm.avatar = localStorage.getItem('avatar')
-                    axios.post(`/main/editUser`, JSON.stringify(data), {
+                    request.post(`/main/editUser`, JSON.stringify(data), {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -677,7 +677,7 @@ export default {
         },
         // 初始化数据
         getData() {
-            axios.get("/main/getUser", { params: { id: this.user.id } }).then(res => {
+            request.get("/main/getUser", { params: { id: this.user.id } }).then(res => {
                 this.formData = res.data.data.rows[0];
                 this.updateForm = res.data.data.rows[0];
 
@@ -698,7 +698,7 @@ export default {
                 id: this.user.id,
                 avatar: this.user.avatar
             }
-            axios.post(`/main/editUser`, JSON.stringify(data), {
+            request.post(`/main/editUser`, JSON.stringify(data), {
                 headers: {
                     'Content-Type': 'application/json'
                 }

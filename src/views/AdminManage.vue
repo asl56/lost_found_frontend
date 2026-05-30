@@ -293,7 +293,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
     data() {
         return {
@@ -394,7 +394,7 @@ export default {
         },
         //添加用户
         handleAddUser() {
-            axios.post("/main/addUser", JSON.stringify(this.addForm), {
+            request.post("/main/addUser", JSON.stringify(this.addForm), {
                 headers: {
                     "Content-Type": "application/json",
                 }
@@ -430,7 +430,7 @@ export default {
                     id: row.id,
                     statusID: id,
                 }
-                axios.post(`/main/editUser`, JSON.stringify(data), {
+                request.post(`/main/editUser`, JSON.stringify(data), {
                     headers: {
                         "Content-Type": "application/json",
                     }
@@ -463,7 +463,7 @@ export default {
             this.getData();
         },
         getData() {//初始化数据
-            axios.get("/main/getUser", { params: { role: '管理员', userName: this.formInline.userName, name: this.formInline.name,statusID:this.formInline.status,page:this.page.page,count:this.page.count} }).then(res => {
+            request.get("/main/getUser", { params: { role: '管理员', userName: this.formInline.userName, name: this.formInline.name,statusID:this.formInline.status,page:this.page.page,count:this.page.count} }).then(res => {
                 this.total = res.data.data.total;
                 this.tableData = res.data.data.rows
                 for (let index = 0; index < this.tableData.length; index++) {
@@ -476,7 +476,7 @@ export default {
                 }
 
             })
-            axios.get("/main/getUserStatus").then(res => {
+            request.get("/main/getUserStatus").then(res => {
                 this.statusList=res.data.data
             })
         }

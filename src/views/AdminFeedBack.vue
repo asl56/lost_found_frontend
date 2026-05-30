@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
     data() {
         return {
@@ -167,7 +167,7 @@ export default {
 
         //删除反馈
         handleDelete(row) {
-            axios.get("/main/deleteFeedBack", { params: { id: row.id } }).then(() => {
+            request.get("/main/deleteFeedBack", { params: { id: row.id } }).then(() => {
                 this.$notify({
                     title: '成功',
                     message: '删除成功',
@@ -186,7 +186,7 @@ export default {
             this.getData();
         },
         getData() {//初始化数据
-            axios.get("/main/getFeedBack", { params: { page: this.page.page, count: this.page.count, releaseDate: this.formInline.date, userID: this.formInline.name } }).then(res => {
+            request.get("/main/getFeedBack", { params: { page: this.page.page, count: this.page.count, releaseDate: this.formInline.date, userID: this.formInline.name } }).then(res => {
                 this.total = res.data.data.total;
                 this.tableData = res.data.data.rows
                 if (this.tableData.length < 1 && this.page.page > 1) {
@@ -197,7 +197,7 @@ export default {
             });
             if (this.nameList.length > 0)
                 this.nameList = [];
-            axios.get("/main/getUser").then(res => {
+            request.get("/main/getUser").then(res => {
                 for (let index = 0; index < res.data.data.rows.length; index++) {
                     this.nameList.push(res.data.data.rows[index]);
                 }

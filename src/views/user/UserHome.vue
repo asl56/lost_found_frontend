@@ -327,7 +327,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
     data() {
         return {
@@ -380,7 +380,7 @@ export default {
         // 添加失物留言
         addContact() {
             this.data.content = this.content
-            axios.post("/main/addContact", JSON.stringify(this.data), {
+            request.post("/main/addContact", JSON.stringify(this.data), {
                 headers: { 'Content-Type': 'application/json' }
             }).then(() => {
                 this.$notify({
@@ -395,7 +395,7 @@ export default {
         // 添加招领留言
         addFoundContact() {
             this.data.content = this.content
-            axios.post("/main/addContact", JSON.stringify(this.data), {
+            request.post("/main/addContact", JSON.stringify(this.data), {
                 headers: { 'Content-Type': 'application/json' }
             }).then(() => {
                 this.$notify({
@@ -429,7 +429,7 @@ export default {
         },
         //招领物品详情
         handelFoundView(row) {
-            axios.get("/main/getFound", { params: { id: row.id } }).then(res => {
+            request.get("/main/getFound", { params: { id: row.id } }).then(res => {
                 this.showView = res.data.data.rows[0];
                 this.showView.itemPhoto = `/main/download?name=${this.showView.itemPhoto}`;
                 this.dialogShowView = true;
@@ -437,7 +437,7 @@ export default {
         },
         //失物详情
         handelView(row) {
-            axios.get("/main/getLost", { params: { id: row.id } }).then(res => {
+            request.get("/main/getLost", { params: { id: row.id } }).then(res => {
                 this.showView = res.data.data.rows[0];
                 this.showView.itemPhoto = `/main/download?name=${this.showView.itemPhoto}`;
                 this.dialogShowView = true;
@@ -453,21 +453,21 @@ export default {
         },
         // 初始化数据
         getData() {
-            axios.get("/main/getLost", { params: { page: 1, count: 2, statusID: 2 } }).then(res => {
+            request.get("/main/getLost", { params: { page: 1, count: 2, statusID: 2 } }).then(res => {
                 this.LostList = res.data.data.rows
                 for (let index = 0; index < this.LostList.length; index++) {
                     this.LostList[index].itemPhoto = `/main/download?name=${this.LostList[index].itemPhoto}`;
 
                 }
             })
-            axios.get("/main/getFound", { params: { page: 1, count: 2, statusID: 4 } }).then(res => {
+            request.get("/main/getFound", { params: { page: 1, count: 2, statusID: 4 } }).then(res => {
                 this.foundList = res.data.data.rows
                 for (let index = 0; index < this.LostList.length; index++) {
                     this.foundList[index].itemPhoto = `/main/download?name=${this.foundList[index].itemPhoto}`;
 
                 }
             })
-            axios.get("/main/getNoticeAll", { params: { page: 1, count: 1 } }).then(res => {
+            request.get("/main/getNoticeAll", { params: { page: 1, count: 1 } }).then(res => {
                 this.notice = res.data.data.rows[0]
             })
             

@@ -319,7 +319,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
     data() {
         return {
@@ -375,7 +375,7 @@ export default {
                     id: this.showView.id,
                     statusID: 8
                 }
-                axios.post("/main/editLost", JSON.stringify(data), {
+                request.post("/main/editLost", JSON.stringify(data), {
                     headers: { 'Content-Type': 'application/json' }
                 }).then(() => {
                     this.$notify({
@@ -390,7 +390,7 @@ export default {
                     id: this.showView.id,
                     statusID: 8
                 }
-                axios.post("/main/editFound", JSON.stringify(data), {
+                request.post("/main/editFound", JSON.stringify(data), {
                     headers: { 'Content-Type': 'application/json' }
                 }).then(() => {
                     this.$notify({
@@ -406,7 +406,7 @@ export default {
         },
         // 失物详情
         handelView(row, key) {
-            axios.get("/main/getLost", { params: { id: row.id } }).then(res => {
+            request.get("/main/getLost", { params: { id: row.id } }).then(res => {
                 this.showView = res.data.data.rows[0];
                 this.showView.itemPhoto = `/main/download?name=${this.showView.itemPhoto}`;
                 this.showView.key = key
@@ -416,7 +416,7 @@ export default {
         },
         // 招领物品详情
         handelFoundView(row, key) {
-            axios.get("/main/getFound", { params: { id: row.id } }).then(res => {
+            request.get("/main/getFound", { params: { id: row.id } }).then(res => {
                 this.showView = res.data.data.rows[0];
                 this.showView.itemPhoto = `/main/download?name=${this.showView.itemPhoto}`;
                 this.showView.key = key
@@ -430,7 +430,7 @@ export default {
                     id: this.showView.id,
                     statusID: 2
                 }
-                axios.post("/main/editLost", JSON.stringify(data), {
+                request.post("/main/editLost", JSON.stringify(data), {
                     headers: { 'Content-Type': 'application/json' }
                 }).then(() => {
                     this.$notify({
@@ -445,7 +445,7 @@ export default {
                     id: this.showView.id,
                     statusID: 4
                 }
-                axios.post("/main/editFound", JSON.stringify(data), {
+                request.post("/main/editFound", JSON.stringify(data), {
                     headers: { 'Content-Type': 'application/json' }
                 }).then(() => {
                     this.$notify({
@@ -511,7 +511,7 @@ export default {
             }
         },
         getData() {//初始化数据
-            axios.get("/main/getLost", { params: { page: this.page.page, count: this.page.count, releaseDate: this.formInline.date, statusID: 7 } }).then(res => {
+            request.get("/main/getLost", { params: { page: this.page.page, count: this.page.count, releaseDate: this.formInline.date, statusID: 7 } }).then(res => {
                 this.total = res.data.data.total;
                 this.tableData = res.data.data.rows
                 if (this.tableData.length < 1 && this.page.page > 1) {
@@ -528,7 +528,7 @@ export default {
 
         },
         getFoundData() {
-            axios.get("/main/getFound", { params: { page: this.page.page, count: this.page.count, releaseDate: this.formInline.date, statusID: 7 } }).then(res => {
+            request.get("/main/getFound", { params: { page: this.page.page, count: this.page.count, releaseDate: this.formInline.date, statusID: 7 } }).then(res => {
                 this.total = res.data.data.total;
                 this.tableData = res.data.data.rows
                 if (this.tableData.length < 1 && this.page.page > 1) {

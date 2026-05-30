@@ -240,7 +240,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
     data() {
         return {
@@ -330,7 +330,7 @@ export default {
 
         //删除物品
         handleDelete(row) {
-            axios.get("/main/deleteContact", { params: { id: row.id } }).then(() => {
+            request.get("/main/deleteContact", { params: { id: row.id } }).then(() => {
                 this.$notify({
                     title: '成功',
                     message: '删除成功',
@@ -361,7 +361,7 @@ export default {
             }
         },
         getData() {//初始化数据
-            axios.get("/main/getContact", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, contactTime: this.formInline.date, itemsUserID: this.id } }).then(res => {
+            request.get("/main/getContact", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, contactTime: this.formInline.date, itemsUserID: this.id } }).then(res => {
                 this.total = res.data.data.total;
                 var data = res.data.data.rows
                 if (this.tableData.length < 1 && this.page.page > 1) {
@@ -372,7 +372,7 @@ export default {
                 // 修复：使用 Promise.all 等待所有异步用户信息请求完成，替代之前不可靠的 setTimeout(500)
                 const userPromises = data.map((item, index) => {
                     item.itemPhoto = `/main/download?name=${item.itemPhoto}`;
-                    return axios.get("/main/getUser", { params: { id: item.userID } }).then(res => {
+                    return request.get("/main/getUser", { params: { id: item.userID } }).then(res => {
                         data[index].name = res.data.data.rows[0].name;
                         data[index].phone = res.data.data.rows[0].phone;
                     }).catch(() => {
@@ -390,7 +390,7 @@ export default {
 
         },
         getFoundData() {
-            axios.get("/main/getFoundContact", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, contactTime: this.formInline.date, itemsUserID: this.id } }).then(res => {
+            request.get("/main/getFoundContact", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, contactTime: this.formInline.date, itemsUserID: this.id } }).then(res => {
                 this.total = res.data.data.total;
                 var data = res.data.data.rows
                 if (this.tableData.length < 1 && this.page.page > 1) {
@@ -401,7 +401,7 @@ export default {
                 // 修复：使用 Promise.all 等待所有异步用户信息请求完成，替代之前不可靠的 setTimeout(500)
                 const userPromises = data.map((item, index) => {
                     item.itemPhoto = `/main/download?name=${item.itemPhoto}`;
-                    return axios.get("/main/getUser", { params: { id: item.userID } }).then(res => {
+                    return request.get("/main/getUser", { params: { id: item.userID } }).then(res => {
                         data[index].name = res.data.data.rows[0].name;
                         data[index].phone = res.data.data.rows[0].phone;
                     }).catch(() => {

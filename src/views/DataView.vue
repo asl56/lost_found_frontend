@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
     data() {
         return {
@@ -123,13 +123,13 @@ export default {
         // 初始化数据
         getData() {
             this.today = this.getCurrentDate();
-            axios.get("/main/getFeedBackAll").then(res => {
+            request.get("/main/getFeedBackAll").then(res => {
                 this.config = {
                     ...this.config,
                     number: [res.data.data.total],
                 }
             });
-            axios.get("/main/getFeedBack", { params: { released: this.today } }).then(res => {
+            request.get("/main/getFeedBack", { params: { released: this.today } }).then(res => {
                 this.toDayConfig = {
                     ...this.toDayConfig,
                     number: [res.data.data.total],
@@ -140,13 +140,13 @@ export default {
                     this.like=false
                 }
             });
-            axios.get("/main/getLost", { params: { statusID: 2 } }).then(res => {
+            request.get("/main/getLost", { params: { statusID: 2 } }).then(res => {
                 this.LostConfig = {
                     ...this.LostConfig,
                     number: [res.data.data.total],
                 }
             });
-            axios.get("/main/getFound", { params: { statusID: 4 } }).then(res => {
+            request.get("/main/getFound", { params: { statusID: 4 } }).then(res => {
                 this.FoundConfig = {
                     ...this.FoundConfig,
                     number: [res.data.data.total],

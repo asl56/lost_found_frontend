@@ -371,7 +371,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
   data() {
     return {
@@ -436,7 +436,7 @@ export default {
   methods: {
     addFoundContact() {
       this.data.content = this.content
-      axios.post("/main/addContact", JSON.stringify(this.data), {
+      request.post("/main/addContact", JSON.stringify(this.data), {
         headers: { 'Content-Type': 'application/json' }
       }).then(() => {
         this.$notify({
@@ -458,7 +458,7 @@ export default {
     },
 
     handelView(row) {
-      axios.get("/main/getFound", { params: { id: row.id } }).then(res => {      
+      request.get("/main/getFound", { params: { id: row.id } }).then(res => {      
         this.showView = res.data.data.rows[0];
         this.showView.itemPhoto = `/main/download?name=${this.showView.itemPhoto}`;
         this.dialogShowView = true;
@@ -468,7 +468,7 @@ export default {
       this.$refs[addForm].validate((valid) => {
         if (valid) {
           this.addForm.userID = this.id
-          axios.post("/main/addFound", JSON.stringify(this.addForm), {
+          request.post("/main/addFound", JSON.stringify(this.addForm), {
             headers: {
               "Content-Type": "application/json",
             }
@@ -533,7 +533,7 @@ export default {
       this.getData();
     },
     getData() {//初始化数据
-      axios.get("/main/getFound", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, releaseDate: this.formInline.date, userID: this.formInline.name, statusID: 4 } }).then(res => {
+      request.get("/main/getFound", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, releaseDate: this.formInline.date, userID: this.formInline.name, statusID: 4 } }).then(res => {
         this.total = res.data.data.total;
         this.tableData = res.data.data.rows
         if (this.tableData.length < 1 && this.page.page > 1) {
@@ -546,7 +546,7 @@ export default {
 
         }
       });
-      axios.get("/main/getUser").then(res => {
+      request.get("/main/getUser").then(res => {
         if (this.nameList != null || this.nameList.length > 1)
           this.nameList = [];
         for (let index = 0; index < res.data.data.rows.length; index++) {

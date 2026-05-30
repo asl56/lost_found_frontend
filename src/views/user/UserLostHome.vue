@@ -399,7 +399,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
   data() {
     return {
@@ -493,7 +493,7 @@ export default {
     },
     addContact() {
       this.data.content = this.content
-      axios.post("/main/addContact", JSON.stringify(this.data), {
+      request.post("/main/addContact", JSON.stringify(this.data), {
         headers: { 'Content-Type': 'application/json' }
       }).then(() => {
         this.$notify({
@@ -506,7 +506,7 @@ export default {
       })
     },
     handelView(row) {
-      axios.get("/main/getLost", { params: { id: row.id } }).then(res => {
+      request.get("/main/getLost", { params: { id: row.id } }).then(res => {
         this.showView = res.data.data.rows[0];
         this.showView.itemPhoto = `/main/download?name=${this.showView.itemPhoto}`;
         this.dialogShowView = true;
@@ -516,7 +516,7 @@ export default {
       this.$refs[addForm].validate((valid) => {
         if (valid) {
           this.addForm.userID = this.id
-          axios.post("/main/addLost", JSON.stringify(this.addForm), {
+          request.post("/main/addLost", JSON.stringify(this.addForm), {
             headers: {
               "Content-Type": "application/json",
             }
@@ -588,7 +588,7 @@ export default {
     getData() {//初始化数据
       this.loading = true
       this.errorMessage = ''
-      axios.get("/main/getLost", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, releaseDate: this.formInline.date, userID: this.formInline.name, statusID: 2 } }).then(res => {
+      request.get("/main/getLost", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, releaseDate: this.formInline.date, userID: this.formInline.name, statusID: 2 } }).then(res => {
         this.total = res.data.data.total;
         this.tableData = res.data.data.rows
         if (this.tableData.length < 1 && this.page.page > 1) {
@@ -606,14 +606,14 @@ export default {
       }).finally(() => {
         this.loading = false
       });
-      axios.get("/main/getUser").then(res => {
+      request.get("/main/getUser").then(res => {
         if (this.nameList != null || this.nameList.length > 1)
           this.nameList = [];
         for (let index = 0; index < res.data.data.rows.length; index++) {
           this.nameList.push(res.data.data.rows[index]);
         }
       })
-      axios.get("/main/getLostStatus").then(res => {
+      request.get("/main/getLostStatus").then(res => {
         this.statusList = res.data.data
       })
     }

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
     data() {
         return {
@@ -36,7 +36,7 @@ export default {
     methods: {
         // 初始化数据
         getData(){
-            axios.get("/main/getNoticeAll",{params:{page:1,count:3} }).then(res => {
+            request.get("/main/getNoticeAll",{params:{page:1,count:3} }).then(res => {
                 this.activities=res.data.data.rows
                 this.activities[0].color='#67C23A'
             })

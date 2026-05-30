@@ -70,7 +70,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
     data() {
         return {
@@ -89,7 +89,7 @@ export default {
     },
     methods: {
         handleDelete(id) {
-            axios.get("/main/deleteFeedBack", { params: { id: id } }).then(() => {
+            request.get("/main/deleteFeedBack", { params: { id: id } }).then(() => {
                 this.$notify({
                     title: '成功',
                     message: '删除成功',
@@ -100,7 +100,7 @@ export default {
             })
         },
         getData() {
-            axios.get("/main/getFeedBackAll").then(res => {
+            request.get("/main/getFeedBackAll").then(res => {
                 this.tableData = res.data.data.rows
                 for (let index = 0; index < this.tableData.length; index++) {
                     this.tableData[index].avatar = `/main/download?name=${this.tableData[index].avatar}`;
@@ -112,7 +112,7 @@ export default {
                 userID: this.id,
                 content: this.textarea
             }
-            axios.post("/main/addFeedBack", JSON.stringify(data), {
+            request.post("/main/addFeedBack", JSON.stringify(data), {
                 headers: { 'Content-Type': 'application/json' }
             }).then(() => {
                 this.$notify({

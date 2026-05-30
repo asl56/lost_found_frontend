@@ -488,7 +488,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import request from "@/utils/request";
 export default {
   data() {
     return {
@@ -566,7 +566,7 @@ export default {
     editLost(updateForm) {
       this.$refs[updateForm].validate((valid) => {
         if (valid) {
-          axios.post("/main/editLost", JSON.stringify(this.updateForm), {
+          request.post("/main/editLost", JSON.stringify(this.updateForm), {
             headers: {
               "Content-Type": "application/json",
             }
@@ -584,14 +584,14 @@ export default {
       })
     },
     showEdit(row) {
-      axios.get("/main/getLost", { params: { id: row.id } }).then(res => {
+      request.get("/main/getLost", { params: { id: row.id } }).then(res => {
         this.updateForm = res.data.data.rows[0];
         this.imageUrl = `/main/download?name=${this.updateForm.itemPhoto}`;
         this.dialogUpdateForm = true;
       })
     },
     handelView(row) {
-      axios.get("/main/getLost", { params: { id: row.id } }).then(res => {
+      request.get("/main/getLost", { params: { id: row.id } }).then(res => {
         this.showView = res.data.data.rows[0];
         this.showView.itemPhoto = `/main/download?name=${this.showView.itemPhoto}`;
         this.dialogShowView = true;
@@ -601,7 +601,7 @@ export default {
       this.$refs[addForm].validate((valid) => {
         if (valid) {
           this.addForm.userID = this.id
-          axios.post("/main/addLost", JSON.stringify(this.addForm), {
+          request.post("/main/addLost", JSON.stringify(this.addForm), {
             headers: {
               "Content-Type": "application/json",
             }
@@ -666,7 +666,7 @@ export default {
 
     //删除物品
     handleDelete(row) {
-      axios.get("/main/deleteLost", { params: { id: row.id } }).then(() => {
+      request.get("/main/deleteLost", { params: { id: row.id } }).then(() => {
         this.$notify({
           title: '成功',
           message: '删除成功',
@@ -688,7 +688,7 @@ export default {
     getData() {//初始化数据
       this.loading = true
       this.errorMessage = ''
-      axios.get("/main/getLost", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, releaseDate: this.formInline.date, userID: this.formInline.name } }).then(res => {
+      request.get("/main/getLost", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, releaseDate: this.formInline.date, userID: this.formInline.name } }).then(res => {
         this.total = res.data.data.total;
         this.tableData = res.data.data.rows
         if (this.tableData.length < 1 && this.page.page > 1) {
@@ -709,14 +709,14 @@ export default {
       });
       if (this.nameList.length > 0)
         this.nameList = [];
-      axios.get("/main/getUser").then(res => {
+      request.get("/main/getUser").then(res => {
         if (this.nameList != null || this.nameList.length > 1)
           this.nameList = [];
         for (let index = 0; index < res.data.data.rows.length; index++) {
           this.nameList.push(res.data.data.rows[index]);
         }
       })
-      axios.get("/main/getLostStatus").then(res => {
+      request.get("/main/getLostStatus").then(res => {
         this.statusList = res.data.data
       })
     }
