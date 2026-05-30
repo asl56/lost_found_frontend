@@ -1,418 +1,108 @@
 <template>
-  <div class="MyContact">
-    <div style="margin-bottom: 20px;">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item style="font-weight: bold;">
-          首页
-        </el-breadcrumb-item>
-        <el-breadcrumb-item>我的</el-breadcrumb-item>
-        <el-breadcrumb-item>我的联系</el-breadcrumb-item>
-      </el-breadcrumb>
+  <div class="my-contact">
+    <div class="page-banner banner-contact">
+      <div class="banner-content"><h1 class="banner-title">我的联系</h1><p class="banner-subtitle">管理你发出的联系消息</p></div>
     </div>
 
-    <div class="MyContact_box">
-      <div class="MyContact_Search">
-        <el-form
-          :inline="true"
-          :model="formInline"
-          style="margin: 0px auto;"
-        >
-          <el-form-item
-            label="日期"
-            style="margin-left: 20px;"
-          >
-            <el-date-picker
-              v-model="formInline.date"
-              value-format="yyyy-MM-dd"
-              type="date"
-              placeholder="选择日期"
-            />
-          </el-form-item>
+    <div class="search-section">
+      <el-form :inline="true" :model="formInline" class="search-form">
+        <el-form-item><el-input v-model="formInline.content" placeholder="搜索联系内容..." clearable prefix-icon="el-icon-search" size="medium" class="search-input" @input="handleSearchInput" /></el-form-item>
+        <el-form-item><el-date-picker v-model="formInline.date" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" size="medium" @change="handleSearchInput" /></el-form-item>
+        <el-form-item><el-button type="primary" size="medium" :loading="loading" @click="getData">查询</el-button><el-button size="medium" @click="handleReset">重置</el-button></el-form-item>
+      </el-form>
+    </div>
 
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="handleClick"
-            >
-              查询
-            </el-button>
-            <el-button
-              type="info"
-              @click="handleReset"
-            >
-              重置
-            </el-button>
-          </el-form-item>
-        </el-form>
+    <div class="toolbar"><span class="result-count">共 <b>{{ total }}</b> 条消息</span></div>
+
+    <div v-loading="loading" class="contact-list">
+      <div v-if="errorMessage" class="error-box"><i class="el-icon-warning" /><span>{{ errorMessage }}</span><el-button type="text" @click="getData">重试</el-button></div>
+      <div v-else-if="!loading && tableData.length === 0" class="empty-box"><i class="el-icon-chat-line-round" /><p>暂无联系记录</p></div>
+      <div v-else>
+        <div v-for="item in tableData" :key="item.id" class="contact-card">
+          <div class="contact-left">
+            <el-image :src="item.itemPhoto" fit="cover" class="contact-img" lazy><div slot="error" class="img-placeholder"><i class="el-icon-picture-outline" /></div></el-image>
+          </div>
+          <div class="contact-body">
+            <div class="contact-header">
+              <span class="contact-name">{{ item.title }}</span>
+              <el-tag size="small" type="info">{{ item.status }}</el-tag>
+            </div>
+            <p class="contact-meta"><i class="el-icon-user" /> 联系人：{{ item.name }} &nbsp; <i class="el-icon-phone" /> {{ item.phone }}</p>
+            <p class="contact-content">{{ item.content }}</p>
+            <span class="contact-time"><i class="el-icon-date" /> {{ item.contactTime }}</span>
+          </div>
+          <div class="contact-right">
+            <el-popconfirm title="确定要删除该条留言吗？" @confirm="handleDelete(item)">
+              <el-button slot="reference" type="danger" plain size="small" icon="el-icon-delete" circle />
+            </el-popconfirm>
+          </div>
+        </div>
       </div>
-      <el-tabs
-        v-model="activeName"
-        style="width: 95%;margin: 0 auto;"
-        @tab-click="handleClick"
-      >
-        <el-tab-pane
-          label="失物留言"
-          name="first"
-        >
-          <div>
-            <el-table
-              :data="tableData"
-              style="width: 90%;border-radius: 5px;margin: 20px auto;"
-            >
-              <el-table-column
-                prop="title"
-                label="失物照片"
-                width="150"
-                style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-              >
-                <template slot-scope="scope">
-                  <el-image
-                    style="width: 100px; height: 100px"
-                    :src="scope.row.itemPhoto"
-                    fit="cover"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="title"
-                label="失物标题"
-                width="170"
-                style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-              />
-              <el-table-column
-                prop="name"
-                label="创建人"
-                width="120"
-              />
-              <el-table-column
-                prop="phone"
-                label="创建人联系方式"
-                width="150"
-              />
-              <el-table-column
-                prop="status"
-                label="当前状态"
-                width="150"
-              />
-              <el-table-column
-                prop="content"
-                label="联系内容"
-                width="150"
-              />
-              <el-table-column
-                prop="contactTime"
-                label="联系时间"
-                width="150"
-              />
-              <el-table-column
-                label="操作"
-                fixed="right"
-                width="150"
-              >
-                <template slot-scope="scope">
-                  <el-popconfirm
-                    confirm-button-text="确定"
-                    cancel-button-text="取消"
-                    icon="el-icon-info"
-                    icon-color="red"
-                    title="确定要删除该条留言吗？"
-                    @confirm="handleDelete(scope.row)"
-                  >
-                    <el-link
-                      slot="reference"
-                      :underline="false"
-                      icon="el-icon-delete"
-                      type="danger"
-                    >
-                      删除
-                    </el-link>
-                  </el-popconfirm>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-pagination
-              :current-page="currentPage"
-              :page-sizes="[5, 10, 15, 20]"
-              :page-size="page.count"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
-              class="MyContact_page"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-            />
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          label="招领留言"
-          name="second"
-        >
-          <div>
-            <el-table
-              :data="tableData"
-              style="width: 90%;border-radius: 5px;margin: 20px auto;"
-            >
-              <el-table-column
-                prop="title"
-                label="招领照片"
-                width="150"
-                style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-              >
-                <template slot-scope="scope">
-                  <el-image
-                    style="width: 100px; height: 100px"
-                    :src="scope.row.itemPhoto"
-                    fit="cover"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="title"
-                label="招领标题"
-                width="170"
-                style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-              />
-              <el-table-column
-                prop="name"
-                label="创建人"
-                width="120"
-              />
-              <el-table-column
-                prop="phone"
-                label="创建人联系方式"
-                width="150"
-              />
-              <el-table-column
-                prop="status"
-                label="当前状态"
-                width="150"
-              />
-              <el-table-column
-                prop="content"
-                label="联系内容"
-                width="150"
-              />
-              <el-table-column
-                prop="contactTime"
-                label="联系时间"
-                width="150"
-              />
-              <el-table-column
-                label="操作"
-                fixed="right"
-                width="150px"
-              >
-                <template slot-scope="scope">
-                  <el-popconfirm
-                    confirm-button-text="确定"
-                    cancel-button-text="取消"
-                    icon="el-icon-info"
-                    icon-color="red"
-                    title="确定要删除该条留言吗？"
-                    @confirm="handleDelete(scope.row)"
-                  >
-                    <el-link
-                      slot="reference"
-                      :underline="false"
-                      icon="el-icon-delete"
-                      type="danger"
-                    >
-                      删除
-                    </el-link>
-                  </el-popconfirm>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-pagination
-              :current-page="currentPage"
-              :page-sizes="[5, 10, 15, 20]"
-              :page-size="page.count"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
-              class="MyContact_page"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-            />
-          </div>
-        </el-tab-pane>
-      </el-tabs>
     </div>
+
+    <div class="pagination-wrap"><el-pagination :current-page="currentPage" :page-sizes="[10, 20, 30]" :page-size="page.count" layout="total, sizes, prev, pager, next, jumper" :total="total" background @size-change="handleSizeChange" @current-change="handleCurrentChange" /></div>
   </div>
 </template>
 
 <script>
 import request from "@/utils/request";
 export default {
-    data() {
-        return {
-            imageUrl: '',
-            dialogVisible: false,
-
-            rules: {
-                title: [
-                    { required: true, message: '请输入标题', trigger: 'blur' },
-                    { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
-                ],
-                ItemPhoto: [
-                    { required: true, message: '请上传物品图片', trigger: 'blur' }
-                ],
-                phone: [{ required: true, message: '请输入联系方式', trigger: 'blur' }, { pattern: /^1[345789]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur' }],
-                description: [{ required: true, message: '请输入物品描述', trigger: 'blur' }, { min: 1, max: 60, message: '长度在 1 到 60 个字符', trigger: 'blur' }],
-                statusID: [
-                    { required: true, message: '请选择状态', trigger: 'blur' }
-                ],
-
-            },
-            id: '',
-            formInline: {
-                title: '',
-                name: '',
-                date: '',
-            },
-
-            currentPage: 1,
-            total: 0,
-            page: {
-                page: 1,
-                count: 5,
-            },
-            tableData: [],
-            activeName: 'first',
-
-        }
-    },
-    created() {
-        this.id = localStorage.getItem("userID");
-        this.getData();
-    },
-    mounted() {
-
-    },
-    methods: {
-        handleClick() {
-            this.tableData = [];
-            if (this.activeName == 'first')
-                this.getData();
-            else {
-                this.getFoundData();
-            }
-        },
-        handleReset() {
-            this.formInline = {
-                title: '',
-                name: '',
-                date: '',
-            };
-            this.page = {
-                page: 1,
-                count: 5,
-            };
-            if (this.activeName == 'first')
-                this.getData();
-            else {
-                this.getFoundData();
-            }
-        },
-        handleClose() {
-            this.imageUrl = '';
-            this.addForm = {
-                title: '',
-                description: '',
-                phone: '',
-                itemPhoto: '',
-            };
-        },
-
-        //删除物品
-        handleDelete(row) {
-            request.get("/main/deleteContact", { params: { id: row.id } }).then(() => {
-                this.$notify({
-                    title: '成功',
-                    message: '删除成功',
-                    type: 'success',
-                    offset: 55,
-                });
-                if (this.activeName == 'first')
-                    this.getData();
-                else {
-                    this.getFoundData();
-                }
-            })
-        },
-        handleSizeChange(val) { //分页
-            this.page.count = val;
-            if (this.activeName == 'first')
-                this.getData();
-            else {
-                this.getFoundData();
-            }
-        },
-        handleCurrentChange(val) {//分页
-            this.page.page = val
-            if (this.activeName == 'first')
-                this.getData();
-            else {
-                this.getFoundData();
-            }
-        },
-        getData() {//初始化数据
-            request.get("/main/getContact", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, contactTime: this.formInline.date, userID: this.id } }).then(res => {
-                this.total = res.data.data.total;
-                this.tableData = res.data.data.rows
-                if (this.tableData.length < 1 && this.page.page > 1) {
-                    this.page.page -= 1;
-                    this.getData()
-                    return;
-                }
-                for (let index = 0; index < this.tableData.length; index++) {
-                    this.tableData[index].itemPhoto = `/main/download?name=${this.tableData[index].itemPhoto}`;
-                }
-            });
-
-
-        },
-        getFoundData() {
-            request.get("/main/getFoundContact", { params: { page: this.page.page, count: this.page.count, title: this.formInline.title, contactTime: this.formInline.date, userID: this.id } }).then(res => {
-                this.total = res.data.data.total;
-                this.tableData = res.data.data.rows
-                if (this.tableData.length < 1 && this.page.page > 1) {
-                    this.page.page -= 1;
-                    this.getFoundData()
-                    return;
-                }
-                for (let index = 0; index < this.tableData.length; index++) {
-                    this.tableData[index].itemPhoto = `/main/download?name=${this.tableData[index].itemPhoto}`;
-
-                }
-            });
-        }
-    },
+  data() { return {
+    loading: false, errorMessage: '',
+    id: '', formInline: { content: '', date: '' },
+    currentPage: 1, total: 0, page: { page: 1, count: 10 }, tableData: [],
+    searchTimer: null,
+  }},
+  created() { this.id = localStorage.getItem("userID"); this.getData(); },
+  beforeDestroy() { if (this.searchTimer) clearTimeout(this.searchTimer); },
+  methods: {
+    handleSearchInput() { if (this.searchTimer) clearTimeout(this.searchTimer); this.searchTimer = setTimeout(() => { this.page.page = 1; this.getData(); }, 350); },
+    handleDelete(row) { request.get("/main/deleteContact", { params: { id: row.id } }).then(() => { this.$notify({ title: '成功', message: '删除成功', type: 'success', offset: 55 }); this.getData(); }); },
+    handleReset() { this.formInline = { content: '', date: '' }; this.page = { page: 1, count: 10 }; this.getData(); },
+    handleSizeChange(val) { this.page.count = val; this.getData(); },
+    handleCurrentChange(val) { this.page.page = val; this.getData(); },
+    getData() {
+      this.loading = true; this.errorMessage = '';
+      request.get("/main/getContact", { params: { page: this.page.page, count: this.page.count, content: this.formInline.content, contactTime: this.formInline.date, userID: this.id } }).then(res => {
+        this.total = res.data.data.total; var data = res.data.data.rows;
+        if (data.length < 1 && this.page.page > 1) { this.page.page -= 1; this.getData(); return; }
+        const userPromises = data.map((item, i) => { item.itemPhoto = `/main/download?name=${item.itemPhoto}`; return request.get("/main/getUser", { params: { id: item.itemsUserID } }).then(r => { data[i].name = r.data.data.rows[0].name; data[i].phone = r.data.data.rows[0].phone; }).catch(() => { data[i].name = '未知'; data[i].phone = '未知'; }); });
+        Promise.all(userPromises).then(() => { this.tableData = data; this.loading = false; });
+      }).catch(() => { this.tableData = []; this.total = 0; this.errorMessage = '数据加载失败'; this.loading = false; });
+    }
+  },
 }
 </script>
-<style>
-* {
-    margin: 0;
-    padding: 0;
-}
 
-
-.MyContact_box {
-    width: 100%;
-    height: 92%;
-    padding: 15px 0 15px 0;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
-}
-
-.MyContact_page {
-    margin-top: 15px;
-    margin: 20px;
-}
-
-.MyContact_Search {
-    margin-top: 20px;
-    height: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+<style scoped>
+.my-contact { max-width: 1000px; margin: 0 auto; padding: 0 20px 40px; }
+.page-banner { border-radius: 16px; padding: 40px 48px; margin-bottom: 24px; color: #fff; position: relative; overflow: hidden; }
+.banner-contact { background: linear-gradient(135deg, #909399 0%, #606266 100%); }
+.page-banner::after { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+.banner-content { position: relative; z-index: 1; }
+.banner-title { margin: 0 0 8px 0; font-size: 26px; font-weight: 700; }
+.banner-subtitle { margin: 0; font-size: 14px; opacity: 0.85; }
+.search-section { background: #fff; border-radius: 12px; padding: 20px 24px 4px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.search-form { display: flex; flex-wrap: wrap; align-items: center; }
+.search-input { width: 260px; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.result-count { color: #909399; font-size: 14px; } .result-count b { color: #909399; font-weight: 600; }
+.contact-list { min-height: 200px; }
+.contact-card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 12px; display: flex; gap: 16px; align-items: flex-start; box-shadow: 0 1px 6px rgba(0,0,0,0.05); transition: all 0.2s ease; }
+.contact-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.contact-left { flex-shrink: 0; }
+.contact-img { width: 80px; height: 80px; border-radius: 10px; background: #f0f2f5; }
+.img-placeholder { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #c0c4cc; }
+.contact-body { flex: 1; min-width: 0; }
+.contact-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.contact-name { font-size: 15px; font-weight: 600; color: #303133; }
+.contact-meta { margin: 0 0 6px 0; font-size: 13px; color: #909399; }
+.contact-content { margin: 0 0 6px 0; font-size: 14px; color: #606266; background: #f5f7fa; padding: 10px 14px; border-radius: 8px; line-height: 1.5; }
+.contact-time { font-size: 12px; color: #c0c4cc; }
+.contact-right { flex-shrink: 0; padding-top: 4px; }
+.error-box, .empty-box { text-align: center; padding: 80px 20px; color: #909399; }
+.error-box i, .empty-box i { font-size: 56px; display: block; margin-bottom: 16px; }
+.error-box i { color: #F56C6C; } .empty-box i { color: #dcdfe6; }
+.empty-box p { margin: 0; font-size: 15px; color: #606266; font-weight: 500; }
+.pagination-wrap { display: flex; justify-content: center; margin-top: 24px; }
 </style>
