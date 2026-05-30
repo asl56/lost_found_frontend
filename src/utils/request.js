@@ -1,7 +1,11 @@
 import axios from 'axios'
 import router from '@/router'
 
+// 生产环境通过 VUE_APP_API_URL 环境变量指定后端地址，开发环境使用 vue.config.js 代理
+const baseURL = process.env.VUE_APP_API_URL || ''
+
 const request = axios.create({
+  baseURL,
   timeout: 10000
 })
 
