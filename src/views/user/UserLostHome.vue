@@ -1,184 +1,136 @@
 <template>
-  <div class="UserLostHome">
-    <div style="margin-bottom: 20px;">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item style="font-weight: bold;">
-          首页
-        </el-breadcrumb-item>
-        <el-breadcrumb-item>失物信息</el-breadcrumb-item>
-      </el-breadcrumb>
+  <div class="lost-home">
+    <!-- 顶部横幅 -->
+    <div class="page-banner">
+      <div class="banner-content">
+        <h1 class="banner-title">失物招领</h1>
+        <p class="banner-subtitle">发现遗失物品？在这里查找或发布信息</p>
+      </div>
     </div>
-    <div class="UserLostHome_box">
-      <div class="UserLostHome_Search">
-        <el-form
-          :inline="true"
-          :model="formInline"
-          style="margin: 0px auto;"
-        >
-          <el-form-item label="标题">
-            <el-input
-              v-model="formInline.title"
-              placeholder="支持模糊查询"
-              clearable
-              @input="handleSearchInput"
-            />
-          </el-form-item>
-          <el-form-item label="日期">
-            <el-date-picker
-              v-model="formInline.date"
-              value-format="yyyy-MM-dd"
-              type="date"
-              placeholder="选择日期"
-              @change="handleSearchInput"
-            />
-          </el-form-item>
-          <el-form-item label="创建人">
-            <el-select
-              v-model="formInline.name"
-              filterable
-              placeholder="创建人"
-              clearable
-              @change="handleSearchInput"
-            >
-              <el-option
-                v-for="(item, index) in nameList"
-                :key="index"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              :loading="loading"
-              @click="getData"
-            >
-              查询
-            </el-button>
-            <el-button
-              type="info"
-              @click="handleReset"
-            >
-              重置
-            </el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div>
-        <div style="text-align: right;width: 90%;margin: 0 auto;">
-          <!-- 添加按钮 -->
-          <el-button
-            type="primary"
-            icon="el-icon-plus"
-            circle
-            @click="dialogFormVisible = true"
+
+    <!-- 搜索区域 -->
+    <div class="search-section">
+      <el-form :inline="true" :model="formInline" class="search-form">
+        <el-form-item>
+          <el-input
+            v-model="formInline.title"
+            placeholder="搜索失物标题..."
+            clearable
+            prefix-icon="el-icon-search"
+            size="medium"
+            class="search-input"
+            @input="handleSearchInput"
           />
+        </el-form-item>
+        <el-form-item>
+          <el-date-picker
+            v-model="formInline.date"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期"
+            size="medium"
+            @change="handleSearchInput"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="formInline.name"
+            filterable
+            placeholder="创建人"
+            clearable
+            size="medium"
+            @change="handleSearchInput"
+          >
+            <el-option
+              v-for="item in nameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="medium" :loading="loading" @click="getData">查询</el-button>
+          <el-button size="medium" @click="handleReset">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <!-- 操作栏 -->
+    <div class="toolbar">
+      <span class="result-count">共 <b>{{ total }}</b> 条记录</span>
+      <el-button type="primary" icon="el-icon-plus" size="small" round @click="dialogFormVisible = true">发布失物</el-button>
+    </div>
+
+    <!-- 卡片网格 -->
+    <div v-loading="loading" element-loading-text="正在加载数据..." class="card-grid-wrapper">
+      <!-- 错误提示 -->
+      <div v-if="errorMessage" class="error-box">
+        <i class="el-icon-warning" />
+        <span>{{ errorMessage }}</span>
+        <el-button type="text" @click="getData">重试</el-button>
+      </div>
+
+      <!-- 空状态 -->
+      <div v-else-if="!loading && tableData.length === 0" class="empty-box">
+        <i class="el-icon-folder-opened" />
+        <p>暂无失物信息</p>
+        <span>点击"发布失物"按钮添加第一条记录吧</span>
+      </div>
+
+      <!-- 卡片网格 -->
+      <div v-else class="card-grid">
+        <div
+          v-for="item in tableData"
+          :key="item.id"
+          class="lost-card"
+          @click="handelView(item)"
+        >
+          <div class="card-image">
+            <el-image
+              :src="item.itemPhoto"
+              fit="cover"
+              class="card-img"
+              lazy
+            >
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline" />
+              </div>
+            </el-image>
+            <span class="card-status" :class="item.status === '已找到' ? 'status-done' : 'status-active'">
+              {{ item.status }}
+            </span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">{{ item.title }}</h3>
+            <p class="card-meta">
+              <i class="el-icon-user" />
+              <span>{{ item.name }}</span>
+              <span class="meta-divider">·</span>
+              <i class="el-icon-date" />
+              <span>{{ item.releaseDate }}</span>
+            </p>
+          </div>
+          <div class="card-footer">
+            <el-button type="primary" plain size="mini" round icon="el-icon-chat-line-round" @click.stop="showContact(item.id)">联系</el-button>
+            <el-button type="info" plain size="mini" round icon="el-icon-view" @click.stop="handelView(item)">详情</el-button>
+          </div>
         </div>
-        <el-table
-          :data="tableData"
-          :loading="loading"
-          element-loading-text="正在加载数据..."
-          style="width: 90%;border-radius: 5px;margin: 0 auto;"
-        >
-          <template slot="empty">
-            <div style="padding: 16px 0;">
-              <div
-                v-if="errorMessage"
-                style="margin-bottom: 10px;color: #F56C6C;"
-              >
-                {{ errorMessage }}
-              </div>
-              <div v-else>
-                暂无数据
-              </div>
-              <el-button
-                v-if="errorMessage"
-                type="text"
-                @click="getData"
-              >
-                重试
-              </el-button>
-            </div>
-          </template>
-          <el-table-column
-            prop="title"
-            label="失物照片"
-            width="150"
-            style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-          >
-            <template slot-scope="scope">
-              <el-image
-                style="width: 100px; height: 100px"
-                :src="scope.row.itemPhoto"
-                fit="cover"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="title"
-            label="失物标题"
-            width="250"
-            style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-          />
-          <el-table-column
-            prop="releaseDate"
-            label="创建时间"
-            width="150"
-          />
-          <el-table-column
-            prop="name"
-            label="创建人"
-            width="150"
-          />
-          <el-table-column
-            prop="phone"
-            label="联系方式"
-            width="150"
-          />
-          <el-table-column
-            prop="status"
-            label="状态"
-            width="150"
-          />
-          <el-table-column
-            label="操作"
-            fixed="right"
-            width="250px"
-          >
-            <template slot-scope="scope">
-              <el-link
-                icon="el-icon-view"
-                :underline="false"
-                type="primary"
-                style="margin:0 20px;"
-                @click="handelView(scope.row)"
-              >
-                详情
-              </el-link>
-              <el-link
-                icon="el-icon-edit"
-                :underline="false"
-                type="primary"
-                style="margin:0 20px;"
-                @click="showContact(scope.row.id)"
-              >
-                留言
-              </el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination
-          :current-page="currentPage"
-          :page-sizes="[5, 10, 15, 20]"
-          :page-size="page.count"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          class="UserLostHome_page"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
       </div>
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination-wrap">
+      <el-pagination
+        :current-page="currentPage"
+        :page-sizes="[8, 16, 24, 32]"
+        :page-size="page.count"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
     <el-dialog
       title="添加失物"
@@ -451,7 +403,7 @@ export default {
       total: 0,
       page: {
         page: 1,
-        count: 5,
+        count: 8,
       },
       tableData: [],
       statusList: [],
@@ -561,7 +513,7 @@ export default {
       };
       this.page = {
         page: 1,
-        count: 5,
+        count: 8,
       };
       this.getData()
     },
@@ -620,31 +572,246 @@ export default {
   },
 }
 </script>
-<style>
-* {
+<style scoped>
+/* ===== 页面整体 ===== */
+.lost-home {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+/* ===== 顶部 Banner ===== */
+.page-banner {
+  background: linear-gradient(135deg, #409EFF 0%, #2d6cdf 100%);
+  border-radius: 16px;
+  padding: 40px 48px;
+  margin-bottom: 24px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.page-banner::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+}
+.page-banner::before {
+  content: '';
+  position: absolute;
+  right: 80px;
+  bottom: -60px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.banner-content {
+  position: relative;
+  z-index: 1;
+}
+.banner-title {
+  margin: 0 0 8px 0;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.banner-subtitle {
   margin: 0;
-  padding: 0;
+  font-size: 14px;
+  opacity: 0.85;
 }
 
-
-.UserLostHome_box {
-  width: 100%;
-  height: 92%;
-  padding: 15px 0 15px 0;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+/* ===== 搜索栏 ===== */
+.search-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px 4px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-input {
+  width: 260px;
 }
 
-.UserLostHome_page {
-  margin-top: 15px;
-  margin: 20px;
-}
-
-.UserLostHome_Search {
-  margin-top: 20px;
-  height: 20px;
+/* ===== 工具栏 ===== */
+.toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
+}
+.result-count {
+  color: #909399;
+  font-size: 14px;
+}
+.result-count b {
+  color: #409EFF;
+  font-weight: 600;
+}
+
+/* ===== 卡片网格 ===== */
+.card-grid-wrapper {
+  min-height: 300px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+@media (max-width: 1200px) {
+  .card-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== 单张卡片 ===== */
+.lost-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+}
+.lost-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+.card-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: #f0f2f5;
+}
+.card-img {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s ease;
+}
+.lost-card:hover .card-img {
+  transform: scale(1.05);
+}
+.image-slot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: #c0c4cc;
+}
+.card-status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+.status-active {
+  background: rgba(64,158,255,0.85);
+  color: #fff;
+}
+.status-done {
+  background: rgba(103,194,58,0.85);
+  color: #fff;
+}
+.card-body {
+  padding: 16px 18px 12px;
+  flex: 1;
+}
+.card-title {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #303133;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card-meta {
+  margin: 0;
+  font-size: 13px;
+  color: #909399;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.card-meta i {
+  font-size: 14px;
+}
+.meta-divider {
+  margin: 0 4px;
+}
+.card-footer {
+  padding: 10px 18px 16px;
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #f5f5f5;
+}
+
+/* ===== 错误 / 空状态 ===== */
+.error-box, .empty-box {
+  text-align: center;
+  padding: 80px 20px;
+  color: #909399;
+}
+.error-box i, .empty-box i {
+  font-size: 56px;
+  display: block;
+  margin-bottom: 16px;
+}
+.error-box i { color: #F56C6C; }
+.empty-box i { color: #dcdfe6; }
+.empty-box p {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  color: #606266;
+  font-weight: 500;
+}
+.empty-box span {
+  font-size: 13px;
+}
+
+/* ===== 分页 ===== */
+.pagination-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+/* ===== 弹窗内图片 ===== */
+.avatar {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 128px;
+  height: 128px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
 }
 </style>
