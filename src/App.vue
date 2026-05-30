@@ -153,4 +153,80 @@
   border-radius: 10px !important;
   box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important;
 }
+
+/* ===== 详情弹窗卡片式布局 ===== */
+.detail-hero {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: #f0f2f5;
+}
+.detail-img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  display: block;
+}
+.detail-status-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  backdrop-filter: blur(10px);
+  letter-spacing: 0.5px;
+}
+.tag-active { background: rgba(64,158,255,0.85); }
+.tag-done { background: rgba(103,194,58,0.85); }
+.tag-audit { background: rgba(230,162,60,0.85); }
+.tag-reject { background: rgba(245,108,108,0.85); }
+
+.detail-body { padding: 0 4px; }
+.detail-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #303133;
+  margin: 0 0 20px 0;
+  letter-spacing: 0.5px;
+}
+.detail-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.info-item {
+  background: #f8f9fb;
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+.info-item .info-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #909399;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.info-item .info-label i { font-size: 14px; color: #409EFF; }
+.info-item .info-value {
+  font-size: 15px;
+  color: #303133;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+}
+.info-row {
+  display: flex;
+  gap: 12px;
+}
+.info-item.half {
+  flex: 1;
+  min-width: 0;
+}
 </style>

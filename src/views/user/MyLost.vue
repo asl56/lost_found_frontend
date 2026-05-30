@@ -90,17 +90,24 @@
       <div slot="footer"><el-button @click="handleClose">取 消</el-button><el-button type="primary" @click="editLost('updateForm')">确 定</el-button></div>
     </el-dialog>
 
-    <!-- 详情弹窗 -->
-    <el-dialog title="详细信息" :visible.sync="dialogShowView" width="500px" @close="handleClose">
-      <el-form :model="showView"><el-form-item label="物品图片" :label-width="formLabelWidth"><img :src="showView.itemPhoto" class="avatar"></el-form-item>
-        <el-form-item label="标题" :label-width="formLabelWidth"><el-input v-model="showView.title" :disabled="true" /></el-form-item>
-        <el-form-item label="描述" :label-width="formLabelWidth"><el-input v-model="showView.description" type="textarea" :disabled="true" /></el-form-item>
-        <el-form-item label="手机号" :label-width="formLabelWidth"><el-input v-model="showView.phone" :disabled="true" /></el-form-item>
-        <el-form-item label="创建人" :label-width="formLabelWidth"><el-input v-model="showView.name" :disabled="true" /></el-form-item>
-        <el-form-item label="创建时间" :label-width="formLabelWidth"><el-input v-model="showView.releaseDate" :disabled="true" /></el-form-item>
-        <el-form-item label="状态" :label-width="formLabelWidth"><el-input v-model="showView.status" :disabled="true" /></el-form-item>
-      </el-form>
-      <div slot="footer"><el-button type="primary" @click="dialogShowView = false">确 定</el-button></div>
+    <!-- 详情弹窗 - 卡片式展示 -->
+    <el-dialog title="物品详情" :visible.sync="dialogShowView" width="480px">
+      <div v-if="showView.itemPhoto" class="detail-hero">
+        <img :src="showView.itemPhoto" class="detail-img" />
+        <span class="detail-status-tag" :class="{ 'tag-audit': showView.status==='审核中', 'tag-reject': showView.status==='未通过', 'tag-done': showView.status==='已找到' }">{{ showView.status }}</span>
+      </div>
+      <div class="detail-body">
+        <h2 class="detail-title">{{ showView.title }}</h2>
+        <div class="detail-info-grid">
+          <div class="info-item"><span class="info-label"><i class="el-icon-document" /> 描述</span><p class="info-value">{{ showView.description || '暂无描述' }}</p></div>
+          <div class="info-row">
+            <div class="info-item half"><span class="info-label"><i class="el-icon-user" /> 创建人</span><span class="info-value">{{ showView.name }}</span></div>
+            <div class="info-item half"><span class="info-label"><i class="el-icon-phone" /> 联系方式</span><span class="info-value">{{ showView.phone }}</span></div>
+          </div>
+          <div class="info-item"><span class="info-label"><i class="el-icon-date" /> 发布时间</span><span class="info-value">{{ showView.releaseDate }}</span></div>
+        </div>
+      </div>
+      <div slot="footer"><el-button @click="dialogShowView = false">关 闭</el-button></div>
     </el-dialog>
   </div>
 </template>
