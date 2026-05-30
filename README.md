@@ -1,81 +1,92 @@
-# 失物招领系统前端（lost_found）
+<p align="center">
+  <img src="https://img.shields.io/badge/Vue-2.x-brightgreen?logo=vue.js" />
+  <img src="https://img.shields.io/badge/Element-UI-blue?logo=element" />
+  <img src="https://img.shields.io/badge/ECharts-5.x-ee6666" />
+  <img src="https://img.shields.io/badge/license-MIT-green" />
+</p>
 
-基于 Vue2 + Element UI 的失物招领前端项目，支持用户端与管理员端两类角色。
+<h1 align="center">🔍 失物招领平台 — 前端</h1>
+<p align="center">基于 Vue 2 + Element UI 的失物招领系统前端<br/>支持 <b>用户端</b> 与 <b>管理员端</b> 双角色，覆盖失物发布、招领、留言、审核完整流程</p>
 
-## 技术栈
+---
 
-- Vue 2
-- Vue Router
-- Vuex
-- Element UI
-- Axios
-- ECharts / DataV
+## ✨ 功能一览
 
-## 目录说明
+| 角色 | 功能 |
+|------|------|
+| 👤 **普通用户** | 注册/登录 · 邮箱验证码 · 发布失物/招领 · 查看/搜索信息 · 在线留言 · 个人中心 · 我的发布 · 联系记录 |
+| 🛡️ **管理员** | 数据仪表盘 · 公告管理 · 失物/招领审核 · 用户管理 · 反馈查看 · ECharts 可视化统计 |
+| 🔒 **安全** | JWT 鉴权 · 路由守卫 · 角色权限拦截 · 请求统一拦截器 · 401/403 统一处理 |
 
-```text
+---
+
+## 🛠 技术栈
+
+| 类别 | 技术 |
+|------|------|
+| 框架 | Vue 2.x |
+| UI 库 | Element UI |
+| 路由 | Vue Router (history 模式) |
+| 状态管理 | Vuex |
+| HTTP | Axios (统一拦截器封装) |
+| 可视化 | ECharts · DataV |
+| 验证码 | vue-puzzle-vcode (滑块验证) |
+
+---
+
+## 📁 目录结构
+
+```
 src/
-  api/           接口方法封装
-  utils/         请求实例与拦截器
-  router/        路由与鉴权守卫
-  views/         页面（管理员端 + 用户端）
-  components/    通用组件
+├── api/            # 接口层（auth.js）
+├── utils/          # 请求实例与拦截器（request.js）
+├── router/         # 路由配置与鉴权守卫
+├── store/          # Vuex 全局状态
+├── views/          # 页面视图
+│   ├── user/       #   用户端页面
+│   ├── errors/     #   403/404/500 错误页
+│   └── *.vue       #   管理员端 + 登录/个人中心
+└── assets/         # 静态资源
 ```
 
-## 环境要求
+---
 
-- Node.js 16+（建议 18 LTS）
-- npm 8+
-
-## 安装与运行
+## 🚀 快速开始
 
 ```bash
+# 安装依赖
 npm install
-```
 
-```bash
-npm run serve
-```
-
-默认本地开发地址通常为：`http://localhost:8080`
-
-## 常用命令
-
-```bash
-# 本地开发
+# 启动开发服务器（默认 http://localhost:8081）
 npm run serve
 
 # 生产构建
 npm run build
-
-# 代码检查
-npm run lint
 ```
 
-## 角色与主要功能
+> 后端 API 代理已配置在 `vue.config.js`，开发时自动转发 `/login` 和 `/main` 到后端 Spring Boot 服务（端口 8080）。
 
-- 用户端
-  - 登录/注册
-  - 失物与招领信息查看、发布、编辑、删除
-  - 留言反馈、个人中心、我的发布/联系记录
-- 管理员端
-  - 公告管理
-  - 失物/招领信息审核与管理
-  - 用户与管理员账号管理
+---
 
-## 鉴权与请求约定
+## 🔗 关联项目
 
-- 登录后会在本地保存：
-  - `jwt`
-  - `userID`
-  - `role`
-  - `avatar`
-- 路由守卫会进行登录态和角色检查
-- 请求层统一使用 `src/utils/request.js`，统一处理 token 注入和 401/403 失效跳转
+- 🔙 **后端服务**：[lost_found_backend](https://github.com/asl56/lost_found_backend) — Spring Boot + MyBatis + MySQL
+- 🗄️ **数据库**：`lost_found_system.sql`
 
-## 答辩演示建议流程
+---
 
-1. 使用普通用户账号登录，演示信息浏览与发布
-2. 演示留言反馈和个人中心资料修改
-3. 切换管理员账号，演示审核与管理功能
-4. 演示路由权限控制（未登录或越权访问的拦截）
+## 📸 页面截图
+
+<p align="center">
+  <em>首页 · 失物中心 · 招领中心 · 我的发布 · 管理员仪表盘 · 登录注册</em>
+</p>
+
+<p align="center">
+  <i>（运行 `npm run serve` 后访问 http://localhost:8081 查看完整效果）</i>
+</p>
+
+---
+
+## 📄 License
+
+MIT © TangZiJun
