@@ -364,7 +364,7 @@ export default {
             this.addForm.avatar = file.name;
         },
         beforeAvatarUpload(file) {
-            const isJPG = file.type === 'image/jpeg';
+            const isJPG = file.type.startsWith('image/');
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isJPG) {

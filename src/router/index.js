@@ -42,12 +42,13 @@ const routes = [
     path: '/UserIndex',
     name: 'UserIndex',
     component: UserIndex,
+    meta: { requiresAuth: true }, // 防御性路由守卫：UserIndex及其所有子路由均需登录
     children:[
       { path: 'UserHome', name: 'home', component: UserHome },
       { path: 'UserLostHome', name: 'Losthome', component: UserLostHome },
       { path: 'UserFoundHome', name: 'FoundHome', component: UserFoundHome },
       { path: 'UserFeedBack', name: 'feedback', component: UserFeedBack },
-      { path: 'UserPersonalCenter', name: 'PersonalCenter', component: UserPersonalCenter },
+      { path: 'UserPersonalCenter', name: 'UserPersonalCenter', component: UserPersonalCenter },
       { path: 'MyLost', name: 'MyLost', component: MyLost },
       { path: 'MyFound', name: 'MyFound', component: MyFound },
       { path: 'MyContact', name: 'MyContact', component: MyContact },
@@ -58,6 +59,7 @@ const routes = [
     path: '/AdminIndex',
     name: 'index',
     component: AdminIndex,
+    meta: { requiresAuth: true }, // 防御性路由守卫：AdminIndex及其所有子路由均需登录
     children: [
       { path: 'AdminHome', name: 'home', component: AdminHome },
       { path: 'AdminNotice', name: 'notice', component: AdminNotice },

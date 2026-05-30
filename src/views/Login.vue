@@ -253,20 +253,33 @@ export default {
                     if (this.registerForm.captcha == this.TrueCaptcha) {
                         getUserByUserName(this.registerForm.userName).then(res => {
                             if (res.data.data.total == 0) {
-                                registerUser(this.registerForm).then(() => {
-                                    this.registerForm = {
-                                        userName: '',
-                                        name: '',
-                                        password: '',
-                                        email: '',
-                                        role: '用户',
+                                registerUser(this.registerForm).then(res => {
+                                    // 修复：检查后端返回的 Result.code，不再盲目显示成功
+                                    if (res.data.code === 1) {
+                                        this.registerForm = {
+                                            userName: '',
+                                            name: '',
+                                            password: '',
+                                            email: '',
+                                            role: '用户',
+                                        }
+                                        this.$notify({
+                                            title: '成功',
+                                            message: '注册成功',
+                                            type: 'success'
+                                        });
+                                        this.activeName = 'first'
+                                    } else {
+                                        this.$notify.error({
+                                            title: '错误',
+                                            message: res.data.msg || '注册失败',
+                                        });
                                     }
-                                    this.$notify({
-                                        title: '成功',
-                                        message: '注册成功',
-                                        type: 'success'
+                                }).catch(() => {
+                                    this.$notify.error({
+                                        title: '错误',
+                                        message: '注册失败，服务器错误',
                                     });
-                                    this.activeName = 'first'
                                 })
                             } else {
                                 this.$notify.error({
