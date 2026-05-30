@@ -81,8 +81,8 @@ npm run build
 |:---:|:---:|:---:|
 | ![首页](src/assets/screenshots/home.png) | ![失物中心](src/assets/screenshots/lost.png) | ![招领中心](src/assets/screenshots/found.png) |
 | **首页** | **失物中心** | **招领中心** |
-| ![登录](src/assets/screenshots/login.png) | ![详情弹窗](src/assets/screenshots/detail.png) | |
-| **登录注册** | **物品详情** | |
+| ![登录](src/assets/screenshots/login.png) | ![详情弹窗](src/assets/screenshots/detail.png) | ![管理员](src/assets/screenshots/admin.png) |
+| **登录注册** | **物品详情** | **管理员仪表盘** |
 
 ---
 
