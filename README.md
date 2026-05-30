@@ -77,13 +77,12 @@ npm run build
 
 ## 📸 页面截图
 
-<p align="center">
-  <em>首页 · 失物中心 · 招领中心 · 我的发布 · 管理员仪表盘 · 登录注册</em>
-</p>
-
-<p align="center">
-  <i>（运行 `npm run serve` 后访问 http://localhost:8081 查看完整效果）</i>
-</p>
+| | | |
+|:---:|:---:|:---:|
+| ![首页](src/assets/screenshots/home.png) | ![失物中心](src/assets/screenshots/lost.png) | ![招领中心](src/assets/screenshots/found.png) |
+| **首页** | **失物中心** | **招领中心** |
+| ![登录](src/assets/screenshots/login.png) | ![详情弹窗](src/assets/screenshots/detail.png) | |
+| **登录注册** | **物品详情** | |
 
 ---
 
